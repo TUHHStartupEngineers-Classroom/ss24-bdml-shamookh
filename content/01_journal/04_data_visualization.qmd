@@ -1,7 +1,7 @@
 ---
-title: "Data Visualization"
+title: "Performance Measures"
 author: "Muhammad Shamookh"
-date: "2024-05"
+date: "2024-06"
 output:
   html_document:
     toc: true
@@ -13,204 +13,380 @@ output:
     code_folding: hide
 ---
 
-# Data Visualization
 
-Last compiled: `r Sys.Date()`
 
-I learned a lot about the themes in this part.
-
-# Challenge No. 01
-
-Total covid cases data was plotted against time. 
-
-## Total covid cases - Time
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
+```
 
 ```{r}
-# Load required libraries
 library(tidyverse)
-library(ggrepel)
+library(GGally)
+library(h2o)
+library(recipes)
+library(rsample)
+```
 
-# Load and preview the data
-covid_data_tbl <- read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv")
-covid_data_tbl %>%
-  head(n=5)
+```{r}
+product_backorders_tbl <- read_csv("./04_perf_meas_files/product_backorders.txt")
+glimpse(product_backorders_tbl)
+```
 
-# Define places to filter
-places <- c('Germany', 'France', 'Spain', 'United Kingdom', 'United States')
+```{r}
+recipe_obj <- recipe(went_on_backorder ~ ., data = product_backorders_tbl) %>%
+  step_zv(all_predictors()) %>%
+  step_mutate_at(potential_issue, deck_risk, oe_constraint, ppap_risk, stop_auto_buy, rev_stop, fn = as.factor) %>%
+  prep()
+```
 
-# Filter the data for selected places
-covid_data_tbl_selected <- covid_data_tbl %>%
-  filter(location %in% places)
+```{r}
+set.seed(1234)
 
-# Get the range of dates
-last_date <- max(covid_data_tbl$date)
-first_date <- min(covid_data_tbl$date)
+split_obj <- initial_split(product_backorders_tbl, prop = 0.85)
+train_readable_tbl <- training(split_obj)
+test_readable_tbl <- testing(split_obj)
 
-# Get the latest total cases for the US
-US_covid_data_tbl <- covid_data_tbl %>%
-  filter(location == "United States")
+train_tbl <- bake(recipe_obj, new_data = train_readable_tbl)
+test_tbl  <- bake(recipe_obj, new_data = test_readable_tbl)
+```
 
-us_last_record <- US_covid_data_tbl %>%
-  filter(date == max(date))
+```{r}
+h2o.init()
 
-us_last_case <- us_last_record$total_cases
-us_last_date <- us_last_record$date
+split_h2o <- h2o.splitFrame(as.h2o(train_tbl), ratios = c(0.85), seed = 1234)
+train_h2o <- split_h2o[[1]]
+valid_h2o <- split_h2o[[2]]
+test_h2o  <- as.h2o(test_tbl)
 
-# Get the latest total cases for Germany
-Germany_covid_data_tbl <- covid_data_tbl %>%
-  filter(location == "Germany")
+y <- "went_on_backorder"
+x <- setdiff(names(train_h2o), y)
+```
 
-germany_last_record <- Germany_covid_data_tbl %>%
-  filter(date == max(date))
+```{r}
+automl_models_h2o <- h2o.automl(
+  x = x,
+  y = y,
+  training_frame    = train_h2o,
+  validation_frame  = valid_h2o,
+  leaderboard_frame = test_h2o,
+  max_runtime_secs  = 120,
+  nfolds            = 5 
+)
+```
 
-germany_last_case <- germany_last_record$total_cases
-germany_last_date <- germany_last_record$date
+```{r}
+typeof(automl_models_h2o)
 
-# Plot
-ggplot(covid_data_tbl_selected, aes(x = date, y = total_cases, color = location)) +
-  geom_line(size = 1.2) +
-  geom_label_repel(data = data.frame(date = us_last_date, total_cases = us_last_case, location = "United States"),
-                   aes(x = date, y = total_cases, label = paste("USA:", format(us_last_case, big.mark = ","))),
-                   fill = "purple", color = "white", nudge_y = 5000000, size = 3) +
-  geom_label_repel(data = data.frame(date = germany_last_date, total_cases = germany_last_case, location = "Germany"),
-                   aes(x = date, y = total_cases, label = paste("Germany:", format(germany_last_case, big.mark = ","))),
-                   fill = "blue", color = "white", nudge_y = 2000000, size = 3) +
-  labs(
-    subtitle = "As of 09/05/2024",
-    title = "COVID-19 confirmed cases worldwide",
-    x = "", 
-    y = "Cumulative Cases",
-    color = "Country"
-  ) +
-  theme(
-    plot.title = element_text(
-      color = "white",
-      size = 16,
-      face = "bold"
-    ),
-    plot.subtitle = element_text(
-      color = "white",
-      size = 12
-    ),
-    legend.position = "bottom",
-    legend.background = element_rect(
-      fill = "#222222",
-      color = "#aaaaaa"
-    ),
-    legend.text = element_text(
-      color = "#aaaaaa"
-    ),
-    legend.title = element_text(
-      color = "#aaaaaa",
-      hjust = 0.5,
-      vjust = 0.5
-    ),
-    axis.text.x = element_text(
-      angle = 45,
-      hjust = 1,
-      color = "#aaaaaa"
-    ),
-    axis.text.y = element_text(
-      color = "#aaaaaa"
-    ),
-    axis.title.y = element_text(
-      color = "white",
-      size = 13,
-      face = "bold"
-    ),
-    plot.background = element_rect(
-      fill = "#222222"
-    ),
-    panel.background = element_rect(
-      fill = "#222222"
-    ),
-    panel.grid = element_line(
-      color = "#888888"
-    ),
-    panel.grid.minor = element_blank(),
-    legend.key = element_rect(
-      fill = "#222222"
+slotNames(automl_models_h2o)
+
+automl_models_h2o@leaderboard
+
+automl_models_h2o@leader
+typeof(automl_models_h2o@leader)
+```
+
+```{r}
+predictions <- h2o.predict(automl_models_h2o@leader, newdata = as.h2o(test_tbl))
+predictions_tbl <- 
+  predictions %>% 
+    as_tibble()
+#h2o.saveModel(automl_models_h2o@leader, path = "./04_perf_meas_files/")
+```
+
+```{r}
+predictions_tbl %>%
+  glimpse()
+```
+
+```{r}
+automl_models_h2o@leaderboard %>% 
+              as_tibble() %>% 
+              select(-c(mean_per_class_error, rmse, mse))
+```
+
+
+```{r}
+plot_h2o_leaderboard <- function(h2o_leaderboard, order_by = c("auc", "logloss"), 
+                                 n_max = 20, size = 4, include_lbl = TRUE) {
+
+    # Setup inputs
+    # adjust input so that all formats are working
+    order_by <- tolower(order_by[[1]])
+
+    leaderboard_tbl <- h2o_leaderboard %>%
+        as_tibble() %>%
+        select(-c(aucpr, mean_per_class_error, rmse, mse)) %>% 
+        mutate(model_type = str_extract(model_id, "[^_]+")) %>%
+        rownames_to_column(var = "rowname") %>%
+        mutate(model_id = paste0(rowname, ". ", model_id) %>% as.factor())
+
+    # Transformation
+    if (order_by == "auc") {
+
+        data_transformed_tbl <- leaderboard_tbl %>%
+            slice(1:n_max) %>%
+            mutate(
+                model_id   = as_factor(model_id) %>% reorder(auc),
+                model_type = as.factor(model_type)
+            ) %>%
+                pivot_longer(cols = -c(model_id, model_type, rowname), 
+                       names_to = "key", 
+                       values_to = "value", 
+                       names_transform = list(key = forcats::fct_inorder)
+                       )
+
+    } else if (order_by == "logloss") {
+
+        data_transformed_tbl <- leaderboard_tbl %>%
+            slice(1:n_max) %>%
+            mutate(
+                model_id   = as_factor(model_id) %>% reorder(logloss) %>% fct_rev(),
+                model_type = as.factor(model_type)
+            ) %>%
+            pivot_longer(cols = -c(model_id, model_type, rowname), 
+                       names_to = "key", 
+                       values_to = "value", 
+                       names_transform = list(key = forcats::fct_inorder)
+                       )
+
+    } else {
+        # If nothing is supplied
+        stop(paste0("order_by = '", order_by, "' is not a permitted option."))
+    }
+
+    # Visualization
+    g <- data_transformed_tbl %>%
+        ggplot(aes(value, model_id, color = model_type)) +
+        geom_point(size = size) +
+        facet_wrap(~ key, scales = "free_x") +
+        labs(title = "Leaderboard Metrics",
+             subtitle = paste0("Ordered by: ", toupper(order_by)),
+             y = "Model Postion, Model ID", x = "")
+
+    if (include_lbl) g <- g + geom_label(aes(label = round(value, 2), 
+                                             hjust = "inward"))
+
+    return(g)
+
+}
+```
+
+```{r}
+#automl_models_h2o@leaderboard %>% plot_h2o_leaderboard()
+
+
+knitr::include_graphics("./04_perf_meas_files/figure-html/unnamed-chunk-12-1.png")
+```
+For some reason I can not build the page because the program have some problem with an h2o function. So I saved the results and loaded them. The used code is commented out.
+```{r}
+#h2o.init()
+#deeplearning_h2o <- 
+#    h2o.loadModel("./04_Modeling/h20_models/DeepLearning_1_AutoML_3_20220614_234925")
+#deeplearning_h2o@allparameters
+
+# Deeplearning_grid_01 <- h2o.grid(
+# 
+#     # See help page for available algos
+#     algorithm = "deeplearning",
+#     
+#     # I just use the same as the object
+#     grid_id = "Deaplearning_grid_01",
+#     
+#     # The following is for ?h2o.deeplearning()
+#     # predictor and response variables
+#     x = x,
+#     y = y,
+#     
+#     # training and validation frame and crossfold validation
+#     training_frame   = train_h2o,
+#     validation_frame = valid_h2o,
+#     nfolds = 5,
+#     
+#     # Hyperparamters: Use deeplearning_h2o@allparameters to see all
+#     hyper_params = list(
+#         # Use some combinations (the first one was the original)
+#         hidden = list(c(10, 10, 10), c(50, 20, 10), c(20, 20, 20)),
+#         epochs = c(10, 50, 100)
+#     )
+# )
+```
+
+
+```{r}
+# <- h2o.getModel("Deaplearning_grid_01_model_3")
+#Deeplearning_grid_01_model_3 %>%h2o.saveModel(path = "04_Modeling/Deaplearning_grid_01_model_3")
+#Deeplearning_grid_01_model_3 <- h2o.loadModel("04_Modeling/Deaplearning_grid_01_model_3/Deaplearning_grid_01_model_3")
+# performance_h2o <- h2o.performance(Deeplearning_grid_01_model_3, newdata = as.h2o(test_tbl))
+# 
+# performance_tbl <- performance_h2o %>%
+#     h2o.metric() %>%
+#     as.tibble()
+# 
+# theme_new <- theme(
+#       legend.position  = "bottom",
+#       panel.background = element_rect(fill   = "transparent"),
+#       panel.border     = element_rect(color = "black", fill = NA, size = 0.5),
+#       panel.grid.major = element_line(color = "grey", size = 0.333)
+#       ) 
+# saveRDS(performance_tbl, file = "performance_tbl.rds")
+
+performance_tbl <- readRDS("performance_tbl.rds")
+```
+
+```{r}
+#performance_tbl %>%
+#    filter(f1 == max(f1))
+#
+#performance_tbl %>%
+#    ggplot(aes(x = threshold)) +
+#    geom_line(aes(y = precision), color = "blue", size = 1) +
+#    geom_line(aes(y = recall), color = "red", size = 1) +
+#    
+#    # Insert line where precision and recall are harmonically optimized
+#    geom_vline(xintercept = #h2o.find_threshold_by_max_metric(performance_h2o, "f1")) +
+#    labs(title = "Precision vs Recall", y = "value") +
+#    theme_new
+#
+knitr::include_graphics("./04_perf_meas_files/figure-html/unnamed-chunk-15-1.png")
+```
+
+```{r}
+#p1 <- performance_tbl %>%
+#  ggplot(aes(fpr, tpr)) +
+#    geom_line(size = 1) +
+#    
+#    # just for demonstration purposes
+#    geom_abline(color = "red", linetype = "dotted") +
+#    
+#    theme_new +
+#    theme(
+#      legend.direction = "vertical",
+#      ) +
+#    labs(
+#        title = "ROC Plot"
+#        #subtitle = "Performance of 3 Top Performing Models"
+#    )
+#p1
+#
+
+knitr::include_graphics("./04_perf_meas_files/figure-html/unnamed-chunk-16-1.png")
+```
+
+```{r}
+#p2 <- performance_tbl %>%
+#  ggplot(aes(recall, precision)) +
+#    geom_line(size = 1) +
+#    theme_new + 
+#    theme(
+#      legend.direction = "vertical",
+#      ) +
+#    labs(
+#        title = "Precision vs Recall Plot"
+#        #subtitle = "Performance of 3 Top Performing Models"
+#    )
+#p2
+
+knitr::include_graphics("./04_perf_meas_files/figure-html/unnamed-chunk-17-1.png")
+```
+
+```{r}
+ranked_predictions_tbl <- predictions_tbl %>%
+    bind_cols(test_tbl) %>%
+    select(predict:Yes, went_on_backorder) %>%
+    # Sorting from highest to lowest class probability
+    arrange(desc(Yes))
+
+calculated_gain_lift_tbl <- ranked_predictions_tbl %>%
+    mutate(ntile = ntile(Yes, n = 10)) %>%
+    group_by(ntile) %>%
+    summarise(
+        cases = n(),
+        responses = sum(went_on_backorder == "Yes")
+    ) %>%
+    arrange(desc(ntile)) %>%
+    
+    # Add group numbers (opposite of ntile)
+    mutate(group = row_number()) %>%
+    select(group, cases, responses) %>%
+    
+    # Calculations
+    mutate(
+        cumulative_responses = cumsum(responses),
+        pct_responses        = responses / sum(responses),
+        gain                 = cumsum(pct_responses),
+        cumulative_pct_cases = cumsum(cases) / sum(cases),
+        lift                 = gain / cumulative_pct_cases,
+        gain_baseline        = cumulative_pct_cases,
+        lift_baseline        = gain_baseline / cumulative_pct_cases
     )
-  ) +
-  scale_x_date(date_breaks = "1 month", date_labels = "%B '%y") +
-  scale_y_continuous(breaks = c(0, 25000000, 50000000, 75000000),
-                     labels = c("0", "25M", "50M", "75M")) +
-  scale_color_manual(values = c("Germany" = "red", 
-                                "France" = "blue", 
-                                "Spain" = "green", 
-                                "United Kingdom" = "orange", 
-                                "United States" = "purple"),
-                     name = "Country",
-                     labels = c("Germany", "France", "Spain", "United Kingdom", "United States")) +
-  guides(color = guide_legend(nrow = 2, byrow = TRUE))
-
-
-
 ```
-
-# Challenge No. 02
-
-Case-fatality rate in every countries were plotted on a map.
-
-## World case-fatality rate
 
 ```{r}
-library(tidyverse)
-library(maps)
-library(purrr)
+#gain_lift_tbl <- performance_h2o %>%
+#    h2o.gainsLift() %>%
+#    as.tibble()
+#
+#gain_transformed_tbl <- gain_lift_tbl %>% 
+#    select(group, cumulative_data_fraction, cumulative_capture_rate, cumulative_lift) %>%
+#    select(-contains("lift")) %>%
+#    mutate(baseline = cumulative_data_fraction) %>%
+#    rename(gain     = cumulative_capture_rate) %>%
+#    # prepare the data for the plotting (for the color and group aesthetics)
+#    pivot_longer(cols = c(gain, baseline), values_to = "value", names_to = "key")
+#
+#p3 <- gain_transformed_tbl %>%
+#    ggplot(aes(x = cumulative_data_fraction, y = value, color = key)) +
+#    geom_line(size = 1.5) +
+#    labs(
+#        title = "Gain Chart",
+#        x = "Cumulative Data Fraction",
+#        y = "Gain"
+#    ) +
+#    theme_new
+#p3
 
-world <- map_data("world")
-covid_data_tbl <- read_csv("https://covid.ourworldindata.org/data/owid-covid-data.csv")
-latest_date <- covid_data_tbl$date %>% max()
+knitr::include_graphics("./04_perf_meas_files/figure-html/unnamed-chunk-19-1.png")
+```
 
-covid_data_tbl_plot <- covid_data_tbl %>%
-  select(location, total_cases, total_deaths, population) %>%
-  drop_na() %>%
-  group_by(location) %>%
-  summarise(total_cases = last(total_cases), 
-            total_deaths = last(total_deaths),
-            population = last(population),
-            mortality_rate = total_deaths / population,
-            case_fatality_rate = total_deaths / total_cases) 
+```{r}
+#lift_transformed_tbl <- gain_lift_tbl %>% 
+#    select(group, cumulative_data_fraction, cumulative_capture_rate, cumulative_lift) %>%
+#    select(-contains("capture")) %>%
+#    mutate(baseline = 1) %>%
+#    rename(lift = cumulative_lift) %>%
+#    pivot_longer(cols = c(lift, baseline), values_to = "value", names_to = "key")
+#
+#p4 <- lift_transformed_tbl %>%
+#    ggplot(aes(x = cumulative_data_fraction, y = value, color = key)) +
+#    geom_line(size = 1.5) +
+#    labs(
+#        title = "Lift Chart",
+#        x = "Cumulative Data Fraction",
+#        y = "Lift"
+#    ) +
+#    theme_new
+#p4
 
-world_covid <- covid_data_tbl_plot %>%
-  mutate(location = case_when(
-    location == "United Kingdom" ~ "UK",
-    location == "United States" ~ "USA",
-    location == "Democratic Republic of Congo" ~ "Democratic Republic of the Congo",
-    TRUE ~ location
-  )) %>%
-  right_join(world, c("location" = "region")) 
+knitr::include_graphics("./04_perf_meas_files/figure-html/unnamed-chunk-20-1.png")
+```
 
-# Visualize mortality rate
-ggplot() +
-  geom_map(data = world_covid,
-           aes(x = long, y = lat, map_id = location, fill = mortality_rate),
-           col = "white",
-           map = world) +
-  scale_fill_gradient(low = "#aa7776", high = "#8b0000") +
-  theme(axis.title = element_blank(),
-        axis.text = element_blank(),
-        plot.background = element_rect(fill = "#222222"),
-        panel.background = element_rect(fill = "#222222"),
-        legend.background = element_rect(fill = "#222222", color = "#aaaaaa"),
-        legend.text = element_text(color = "#aaaaaa"),
-        legend.title = element_text(color = "#aaaaaa", hjust = 0.5, vjust = 0.5))
+```{r}
+library(cowplot)
+library(glue)
+```
 
-# Visualize case-fatality rate
-ggplot() +
-  geom_map(data = world_covid,
-           aes(x = long, y = lat, map_id = location, fill = case_fatality_rate),
-           col = "white",
-           map = world) +
-  scale_fill_gradient(low = "#aa7776", high = "#8b0000") +
-  theme(axis.title = element_blank(),
-        axis.text = element_blank(),
-        plot.background = element_rect(fill = "#222222"),
-        panel.background = element_rect(fill = "#222222"),
-        legend.background = element_rect(fill = "#222222", color = "#aaaaaa"),
-        legend.text = element_text(color = "#aaaaaa"),
-        legend.title = element_text(color = "#aaaaaa", hjust = 0.5, vjust = 0.5))
-
+```{r}
+# Combine using cowplot
+   # 
+#    # cowplot::get_legend extracts a legend from a ggplot object
+  #  p_legend <- get_legend(p1)
+#    # Remove legend from p1
+ #   p1 <- p1 + theme(legend.position = "none")
+    
+    # cowplot::plt_grid() combines multiple ggplots into a single cowplot object
+#    p <- cowplot::plot_grid(p1, p2, p3, p4, ncol = 2)
+ #   p
+knitr::include_graphics("./04_perf_meas_files/figure-html/unnamed-chunk-22-1.png")
 
 ```
+

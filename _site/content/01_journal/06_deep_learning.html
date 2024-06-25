@@ -362,6 +362,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb12-10"><a href="#cb12-10"></a>    <span class="fu">correlate</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb12-11"><a href="#cb12-11"></a>    <span class="fu">focus</span>(Churn) <span class="sc">%&gt;%</span></span>
 <span id="cb12-12"><a href="#cb12-12"></a>    <span class="fu">fashion</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; Correlation computed with
+#&gt; • Method: 'pearson'
+#&gt; • Missing treated using: 'pairwise.complete.obs'</code></pre>
+</div>
 <div class="cell-output-display">
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
@@ -371,18 +376,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>churn_data_tbl <span class="sc">%&gt;%</span> </span>
-<span id="cb13-2"><a href="#cb13-2"></a>        <span class="fu">pivot_longer</span>(<span class="at">cols      =</span> <span class="fu">c</span>(Contract, InternetService, MultipleLines, PaymentMethod), </span>
-<span id="cb13-3"><a href="#cb13-3"></a>                     <span class="at">names_to  =</span> <span class="st">"feature"</span>, </span>
-<span id="cb13-4"><a href="#cb13-4"></a>                     <span class="at">values_to =</span> <span class="st">"category"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-5"><a href="#cb13-5"></a>        <span class="fu">ggplot</span>(<span class="fu">aes</span>(category)) <span class="sc">+</span></span>
-<span id="cb13-6"><a href="#cb13-6"></a>          <span class="fu">geom_bar</span>(<span class="at">fill =</span> <span class="st">"#2DC6D6"</span>) <span class="sc">+</span></span>
-<span id="cb13-7"><a href="#cb13-7"></a>          <span class="fu">facet_wrap</span>(<span class="sc">~</span> feature, <span class="at">scales =</span> <span class="st">"free"</span>) <span class="sc">+</span></span>
-<span id="cb13-8"><a href="#cb13-8"></a>          <span class="fu">labs</span>(</span>
-<span id="cb13-9"><a href="#cb13-9"></a>            <span class="at">title =</span> <span class="st">"Features with multiple categories: Need to be one-hot encoded"</span></span>
-<span id="cb13-10"><a href="#cb13-10"></a>          ) <span class="sc">+</span></span>
-<span id="cb13-11"><a href="#cb13-11"></a>          <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">25</span>, </span>
-<span id="cb13-12"><a href="#cb13-12"></a>                                           <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>churn_data_tbl <span class="sc">%&gt;%</span> </span>
+<span id="cb14-2"><a href="#cb14-2"></a>        <span class="fu">pivot_longer</span>(<span class="at">cols      =</span> <span class="fu">c</span>(Contract, InternetService, MultipleLines, PaymentMethod), </span>
+<span id="cb14-3"><a href="#cb14-3"></a>                     <span class="at">names_to  =</span> <span class="st">"feature"</span>, </span>
+<span id="cb14-4"><a href="#cb14-4"></a>                     <span class="at">values_to =</span> <span class="st">"category"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-5"><a href="#cb14-5"></a>        <span class="fu">ggplot</span>(<span class="fu">aes</span>(category)) <span class="sc">+</span></span>
+<span id="cb14-6"><a href="#cb14-6"></a>          <span class="fu">geom_bar</span>(<span class="at">fill =</span> <span class="st">"#2DC6D6"</span>) <span class="sc">+</span></span>
+<span id="cb14-7"><a href="#cb14-7"></a>          <span class="fu">facet_wrap</span>(<span class="sc">~</span> feature, <span class="at">scales =</span> <span class="st">"free"</span>) <span class="sc">+</span></span>
+<span id="cb14-8"><a href="#cb14-8"></a>          <span class="fu">labs</span>(</span>
+<span id="cb14-9"><a href="#cb14-9"></a>            <span class="at">title =</span> <span class="st">"Features with multiple categories: Need to be one-hot encoded"</span></span>
+<span id="cb14-10"><a href="#cb14-10"></a>          ) <span class="sc">+</span></span>
+<span id="cb14-11"><a href="#cb14-11"></a>          <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">25</span>, </span>
+<span id="cb14-12"><a href="#cb14-12"></a>                                           <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -392,192 +397,192 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># Create recipe</span></span>
-<span id="cb14-2"><a href="#cb14-2"></a>rec_obj <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Churn <span class="sc">~</span> ., <span class="at">data =</span> train_tbl) <span class="sc">%&gt;%</span></span>
-<span id="cb14-3"><a href="#cb14-3"></a>    <span class="fu">step_rm</span>(Churn) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-4"><a href="#cb14-4"></a>    <span class="fu">step_discretize</span>(tenure, <span class="at">options =</span> <span class="fu">list</span>(<span class="at">cuts =</span> <span class="dv">6</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb14-5"><a href="#cb14-5"></a>    <span class="fu">step_log</span>(TotalCharges) <span class="sc">%&gt;%</span></span>
-<span id="cb14-6"><a href="#cb14-6"></a>    <span class="fu">step_dummy</span>(<span class="fu">all_nominal</span>(), <span class="sc">-</span><span class="fu">all_outcomes</span>(), <span class="at">one_hot =</span> T) <span class="sc">%&gt;%</span></span>
-<span id="cb14-7"><a href="#cb14-7"></a>    <span class="fu">step_center</span>(<span class="fu">all_predictors</span>(), <span class="sc">-</span><span class="fu">all_outcomes</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb14-8"><a href="#cb14-8"></a>    <span class="fu">step_scale</span>(<span class="fu">all_predictors</span>(), <span class="sc">-</span><span class="fu">all_outcomes</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb14-9"><a href="#cb14-9"></a>    <span class="fu">prep</span>(<span class="at">data =</span> train_tbl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co"># Create recipe</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a>rec_obj <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Churn <span class="sc">~</span> ., <span class="at">data =</span> train_tbl) <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3"></a>    <span class="fu">step_rm</span>(Churn) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-4"><a href="#cb15-4"></a>    <span class="fu">step_discretize</span>(tenure, <span class="at">options =</span> <span class="fu">list</span>(<span class="at">cuts =</span> <span class="dv">6</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-5"><a href="#cb15-5"></a>    <span class="fu">step_log</span>(TotalCharges) <span class="sc">%&gt;%</span></span>
+<span id="cb15-6"><a href="#cb15-6"></a>    <span class="fu">step_dummy</span>(<span class="fu">all_nominal</span>(), <span class="sc">-</span><span class="fu">all_outcomes</span>(), <span class="at">one_hot =</span> T) <span class="sc">%&gt;%</span></span>
+<span id="cb15-7"><a href="#cb15-7"></a>    <span class="fu">step_center</span>(<span class="fu">all_predictors</span>(), <span class="sc">-</span><span class="fu">all_outcomes</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb15-8"><a href="#cb15-8"></a>    <span class="fu">step_scale</span>(<span class="fu">all_predictors</span>(), <span class="sc">-</span><span class="fu">all_outcomes</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb15-9"><a href="#cb15-9"></a>    <span class="fu">prep</span>(<span class="at">data =</span> train_tbl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>x_train_tbl <span class="ot">&lt;-</span> <span class="fu">bake</span>( rec_obj , <span class="at">new_data =</span>  train_tbl)</span>
-<span id="cb15-2"><a href="#cb15-2"></a>x_test_tbl  <span class="ot">&lt;-</span> <span class="fu">bake</span>( rec_obj , <span class="at">new_data =</span>  test_tbl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>x_train_tbl <span class="ot">&lt;-</span> <span class="fu">bake</span>( rec_obj , <span class="at">new_data =</span>  train_tbl)</span>
+<span id="cb16-2"><a href="#cb16-2"></a>x_test_tbl  <span class="ot">&lt;-</span> <span class="fu">bake</span>( rec_obj , <span class="at">new_data =</span>  test_tbl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>y_train_vec <span class="ot">&lt;-</span> <span class="fu">ifelse</span>( train_tbl<span class="sc">$</span>Churn <span class="sc">==</span> <span class="st">"Yes"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span> )</span>
-<span id="cb16-2"><a href="#cb16-2"></a>y_test_vec  <span class="ot">&lt;-</span> <span class="fu">ifelse</span>( test_tbl<span class="sc">$</span>Churn  <span class="sc">==</span> <span class="st">"Yes"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>y_train_vec <span class="ot">&lt;-</span> <span class="fu">ifelse</span>( train_tbl<span class="sc">$</span>Churn <span class="sc">==</span> <span class="st">"Yes"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span> )</span>
+<span id="cb17-2"><a href="#cb17-2"></a>y_test_vec  <span class="ot">&lt;-</span> <span class="fu">ifelse</span>( test_tbl<span class="sc">$</span>Churn  <span class="sc">==</span> <span class="st">"Yes"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="co"># # Building our Artificial Neural Network</span></span>
-<span id="cb17-2"><a href="#cb17-2"></a></span>
-<span id="cb17-3"><a href="#cb17-3"></a><span class="co">#model_keras &lt;- keras_model_sequential()</span></span>
-<span id="cb17-4"><a href="#cb17-4"></a><span class="co">#</span></span>
-<span id="cb17-5"><a href="#cb17-5"></a><span class="co">#model_keras %&gt;% </span></span>
-<span id="cb17-6"><a href="#cb17-6"></a> <span class="co">#   # First hidden layer</span></span>
-<span id="cb17-7"><a href="#cb17-7"></a><span class="co">#    layer_dense(</span></span>
-<span id="cb17-8"><a href="#cb17-8"></a><span class="co">#       units              = 16, </span></span>
-<span id="cb17-9"><a href="#cb17-9"></a><span class="co">#        kernel_initializer = "uniform", </span></span>
-<span id="cb17-10"><a href="#cb17-10"></a><span class="co">#        activation         = "relu",</span></span>
-<span id="cb17-11"><a href="#cb17-11"></a><span class="co">#        input_shape        = ncol(x_train_tbl))%&gt;% </span></span>
-<span id="cb17-12"><a href="#cb17-12"></a><span class="co">#    # Dropout to prevent overfitting</span></span>
-<span id="cb17-13"><a href="#cb17-13"></a><span class="co">#    layer_dropout(rate = 0.1) %&gt;%</span></span>
-<span id="cb17-14"><a href="#cb17-14"></a>  <span class="co">#  # Second hidden layer</span></span>
-<span id="cb17-15"><a href="#cb17-15"></a><span class="co">#    layer_dense(</span></span>
-<span id="cb17-16"><a href="#cb17-16"></a><span class="co">#       units              = 16, </span></span>
-<span id="cb17-17"><a href="#cb17-17"></a><span class="co">#        kernel_initializer = "uniform", </span></span>
-<span id="cb17-18"><a href="#cb17-18"></a><span class="co">#        activation         = "relu") %&gt;% </span></span>
-<span id="cb17-19"><a href="#cb17-19"></a>  <span class="co">#  # Dropout to prevent overfitting</span></span>
-<span id="cb17-20"><a href="#cb17-20"></a><span class="co">#    layer_dropout(rate = 0.1) %&gt;%</span></span>
-<span id="cb17-21"><a href="#cb17-21"></a>  <span class="co">#  # Output layer</span></span>
-<span id="cb17-22"><a href="#cb17-22"></a><span class="co">#    layer_dense(</span></span>
-<span id="cb17-23"><a href="#cb17-23"></a><span class="co">#        units              = 1, </span></span>
-<span id="cb17-24"><a href="#cb17-24"></a><span class="co">#        kernel_initializer = "uniform", </span></span>
-<span id="cb17-25"><a href="#cb17-25"></a><span class="co">#        activation         = "sigmoid") %&gt;% </span></span>
-<span id="cb17-26"><a href="#cb17-26"></a> <span class="co">#   # Compile ANN</span></span>
-<span id="cb17-27"><a href="#cb17-27"></a><span class="co">#   compile(</span></span>
-<span id="cb17-28"><a href="#cb17-28"></a><span class="co">#        optimizer = 'adam',</span></span>
-<span id="cb17-29"><a href="#cb17-29"></a><span class="co">#        loss      = 'binary_crossentropy',</span></span>
-<span id="cb17-30"><a href="#cb17-30"></a><span class="co">#        metrics   = c('accuracy')</span></span>
-<span id="cb17-31"><a href="#cb17-31"></a><span class="co">#    )</span></span>
-<span id="cb17-32"><a href="#cb17-32"></a><span class="co">#model_keras</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># # Building our Artificial Neural Network</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a></span>
+<span id="cb18-3"><a href="#cb18-3"></a><span class="co">#model_keras &lt;- keras_model_sequential()</span></span>
+<span id="cb18-4"><a href="#cb18-4"></a><span class="co">#</span></span>
+<span id="cb18-5"><a href="#cb18-5"></a><span class="co">#model_keras %&gt;% </span></span>
+<span id="cb18-6"><a href="#cb18-6"></a> <span class="co">#   # First hidden layer</span></span>
+<span id="cb18-7"><a href="#cb18-7"></a><span class="co">#    layer_dense(</span></span>
+<span id="cb18-8"><a href="#cb18-8"></a><span class="co">#       units              = 16, </span></span>
+<span id="cb18-9"><a href="#cb18-9"></a><span class="co">#        kernel_initializer = "uniform", </span></span>
+<span id="cb18-10"><a href="#cb18-10"></a><span class="co">#        activation         = "relu",</span></span>
+<span id="cb18-11"><a href="#cb18-11"></a><span class="co">#        input_shape        = ncol(x_train_tbl))%&gt;% </span></span>
+<span id="cb18-12"><a href="#cb18-12"></a><span class="co">#    # Dropout to prevent overfitting</span></span>
+<span id="cb18-13"><a href="#cb18-13"></a><span class="co">#    layer_dropout(rate = 0.1) %&gt;%</span></span>
+<span id="cb18-14"><a href="#cb18-14"></a>  <span class="co">#  # Second hidden layer</span></span>
+<span id="cb18-15"><a href="#cb18-15"></a><span class="co">#    layer_dense(</span></span>
+<span id="cb18-16"><a href="#cb18-16"></a><span class="co">#       units              = 16, </span></span>
+<span id="cb18-17"><a href="#cb18-17"></a><span class="co">#        kernel_initializer = "uniform", </span></span>
+<span id="cb18-18"><a href="#cb18-18"></a><span class="co">#        activation         = "relu") %&gt;% </span></span>
+<span id="cb18-19"><a href="#cb18-19"></a>  <span class="co">#  # Dropout to prevent overfitting</span></span>
+<span id="cb18-20"><a href="#cb18-20"></a><span class="co">#    layer_dropout(rate = 0.1) %&gt;%</span></span>
+<span id="cb18-21"><a href="#cb18-21"></a>  <span class="co">#  # Output layer</span></span>
+<span id="cb18-22"><a href="#cb18-22"></a><span class="co">#    layer_dense(</span></span>
+<span id="cb18-23"><a href="#cb18-23"></a><span class="co">#        units              = 1, </span></span>
+<span id="cb18-24"><a href="#cb18-24"></a><span class="co">#        kernel_initializer = "uniform", </span></span>
+<span id="cb18-25"><a href="#cb18-25"></a><span class="co">#        activation         = "sigmoid") %&gt;% </span></span>
+<span id="cb18-26"><a href="#cb18-26"></a> <span class="co">#   # Compile ANN</span></span>
+<span id="cb18-27"><a href="#cb18-27"></a><span class="co">#   compile(</span></span>
+<span id="cb18-28"><a href="#cb18-28"></a><span class="co">#        optimizer = 'adam',</span></span>
+<span id="cb18-29"><a href="#cb18-29"></a><span class="co">#        loss      = 'binary_crossentropy',</span></span>
+<span id="cb18-30"><a href="#cb18-30"></a><span class="co">#        metrics   = c('accuracy')</span></span>
+<span id="cb18-31"><a href="#cb18-31"></a><span class="co">#    )</span></span>
+<span id="cb18-32"><a href="#cb18-32"></a><span class="co">#model_keras</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>I have this error, that I shared in attermost. I tried to do the rest of the code but I do not know if they are accurate or not. I commented the code out in order to make it readable.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># x_train_mrx = as.matrix(x_train_tbl)</span></span>
-<span id="cb18-2"><a href="#cb18-2"></a><span class="co"># </span></span>
-<span id="cb18-3"><a href="#cb18-3"></a><span class="co"># ncol(x_train_tbl)</span></span>
-<span id="cb18-4"><a href="#cb18-4"></a><span class="co"># </span></span>
-<span id="cb18-5"><a href="#cb18-5"></a><span class="co"># fit_keras &lt;- keras::fit(</span></span>
-<span id="cb18-6"><a href="#cb18-6"></a><span class="co">#     object = model_keras,</span></span>
-<span id="cb18-7"><a href="#cb18-7"></a><span class="co">#     x = x_train_tbl, </span></span>
-<span id="cb18-8"><a href="#cb18-8"></a><span class="co">#     y = y_train_vec , </span></span>
-<span id="cb18-9"><a href="#cb18-9"></a><span class="co">#     epochs = 35 , </span></span>
-<span id="cb18-10"><a href="#cb18-10"></a><span class="co">#     batch_size = 50 ,</span></span>
-<span id="cb18-11"><a href="#cb18-11"></a><span class="co">#     validation_split = 0.3 </span></span>
-<span id="cb18-12"><a href="#cb18-12"></a><span class="co">#     )</span></span>
-<span id="cb18-13"><a href="#cb18-13"></a><span class="co"># </span></span>
-<span id="cb18-14"><a href="#cb18-14"></a><span class="co"># fit_keras</span></span>
-<span id="cb18-15"><a href="#cb18-15"></a><span class="co"># </span></span>
-<span id="cb18-16"><a href="#cb18-16"></a><span class="co"># plot(fit_keras) +</span></span>
-<span id="cb18-17"><a href="#cb18-17"></a><span class="co">#  labs(title = "Deep Learning Training Results") +</span></span>
-<span id="cb18-18"><a href="#cb18-18"></a><span class="co">#   theme(legend.position  = "bottom", </span></span>
-<span id="cb18-19"><a href="#cb18-19"></a><span class="co">#         strip.placement  = "inside",</span></span>
-<span id="cb18-20"><a href="#cb18-20"></a><span class="co">#         strip.background = element_rect(fill = "#grey"))</span></span>
-<span id="cb18-21"><a href="#cb18-21"></a><span class="co"># </span></span>
-<span id="cb18-22"><a href="#cb18-22"></a><span class="do">## # Predicted Class</span></span>
-<span id="cb18-23"><a href="#cb18-23"></a><span class="co"># yhat_keras_class_vec &lt;- predict_classes(object = model_keras, x = #as.matrix(x_test_tbl)) %&gt;%</span></span>
-<span id="cb18-24"><a href="#cb18-24"></a><span class="co">#    as.vector()</span></span>
-<span id="cb18-25"><a href="#cb18-25"></a><span class="co"># </span></span>
-<span id="cb18-26"><a href="#cb18-26"></a><span class="co"># # Predicted Class Probability</span></span>
-<span id="cb18-27"><a href="#cb18-27"></a><span class="co">#as.matrix(x_test_tbl)) %&gt;%</span></span>
-<span id="cb18-28"><a href="#cb18-28"></a><span class="co">#     as.vector()</span></span>
-<span id="cb18-29"><a href="#cb18-29"></a><span class="co"># </span></span>
-<span id="cb18-30"><a href="#cb18-30"></a><span class="co"># # Format test data and predictions for yardstick metrics</span></span>
-<span id="cb18-31"><a href="#cb18-31"></a><span class="co"># estimates_keras_tbl &lt;- tibble(</span></span>
-<span id="cb18-32"><a href="#cb18-32"></a><span class="co">#     truth      = as.factor(y_test_vec) %&gt;% fct_recode(yes = "1", no = #"0"),</span></span>
-<span id="cb18-33"><a href="#cb18-33"></a><span class="co">#     estimate   = as.factor(yhat_keras_class_vec) %&gt;% fct_recode(yes = #"1", no = "0"),</span></span>
-<span id="cb18-34"><a href="#cb18-34"></a><span class="co">#    class_prob = yhat_keras_prob_vec</span></span>
-<span id="cb18-35"><a href="#cb18-35"></a><span class="co"># )</span></span>
-<span id="cb18-36"><a href="#cb18-36"></a><span class="co"># </span></span>
-<span id="cb18-37"><a href="#cb18-37"></a><span class="co">#estimates_keras_tbl</span></span>
-<span id="cb18-38"><a href="#cb18-38"></a><span class="co"># </span></span>
-<span id="cb18-39"><a href="#cb18-39"></a><span class="co"># # Confusion Table</span></span>
-<span id="cb18-40"><a href="#cb18-40"></a><span class="co"># estimates_keras_tbl %&gt;% conf_mat(</span></span>
-<span id="cb18-41"><a href="#cb18-41"></a><span class="co">#   truth,</span></span>
-<span id="cb18-42"><a href="#cb18-42"></a><span class="co">#   estimate)</span></span>
-<span id="cb18-43"><a href="#cb18-43"></a><span class="co">#</span></span>
-<span id="cb18-44"><a href="#cb18-44"></a><span class="co"># # Accuracy</span></span>
-<span id="cb18-45"><a href="#cb18-45"></a><span class="co"># estimates_keras_tbl %&gt;% accuracy(truth, estimate)</span></span>
-<span id="cb18-46"><a href="#cb18-46"></a><span class="co"># </span></span>
-<span id="cb18-47"><a href="#cb18-47"></a><span class="co"># # AUC</span></span>
-<span id="cb18-48"><a href="#cb18-48"></a><span class="co"># estimates_keras_tbl %&gt;% roc_auc(</span></span>
-<span id="cb18-49"><a href="#cb18-49"></a><span class="co">#   data,</span></span>
-<span id="cb18-50"><a href="#cb18-50"></a><span class="co">#   truth,</span></span>
-<span id="cb18-51"><a href="#cb18-51"></a><span class="co">#   event_level = "second")</span></span>
-<span id="cb18-52"><a href="#cb18-52"></a><span class="co"># </span></span>
-<span id="cb18-53"><a href="#cb18-53"></a><span class="co"># # Precision</span></span>
-<span id="cb18-54"><a href="#cb18-54"></a><span class="co"># tibble(</span></span>
-<span id="cb18-55"><a href="#cb18-55"></a><span class="co">#     precision = precision(</span></span>
-<span id="cb18-56"><a href="#cb18-56"></a><span class="co">#                         data,</span></span>
-<span id="cb18-57"><a href="#cb18-57"></a><span class="co">#                         truth),</span></span>
-<span id="cb18-58"><a href="#cb18-58"></a><span class="co">#     recall    = recall(</span></span>
-<span id="cb18-59"><a href="#cb18-59"></a><span class="co">#                       data,</span></span>
-<span id="cb18-60"><a href="#cb18-60"></a><span class="co">#                       truth)</span></span>
-<span id="cb18-61"><a href="#cb18-61"></a><span class="co"># )</span></span>
-<span id="cb18-62"><a href="#cb18-62"></a><span class="co"># </span></span>
-<span id="cb18-63"><a href="#cb18-63"></a><span class="co"># # F1-Statistic</span></span>
-<span id="cb18-64"><a href="#cb18-64"></a><span class="co"># estimates_keras_tbl %&gt;% f_meas(truth, estimate, beta = 1)</span></span>
-<span id="cb18-65"><a href="#cb18-65"></a><span class="co"># </span></span>
-<span id="cb18-66"><a href="#cb18-66"></a><span class="co"># class(model_keras)</span></span>
-<span id="cb18-67"><a href="#cb18-67"></a><span class="co"># </span></span>
-<span id="cb18-68"><a href="#cb18-68"></a><span class="co"># # Setup lime::model_type() function for keras</span></span>
-<span id="cb18-69"><a href="#cb18-69"></a><span class="co"># model_type.keras.engine.sequential.Sequential  &lt;- function(x, ...) {</span></span>
-<span id="cb18-70"><a href="#cb18-70"></a><span class="co">#     return("classification")</span></span>
-<span id="cb18-71"><a href="#cb18-71"></a><span class="co"># }</span></span>
-<span id="cb18-72"><a href="#cb18-72"></a><span class="co"># </span></span>
-<span id="cb18-73"><a href="#cb18-73"></a><span class="co"># # Setup lime::predict_model() function for keras</span></span>
-<span id="cb18-74"><a href="#cb18-74"></a><span class="co"># predict_model.keras.engine.sequential.Sequential &lt;- function(x, newdata, #type, ...) {</span></span>
-<span id="cb18-75"><a href="#cb18-75"></a><span class="co">#     pred &lt;- predict_proba(object = x, x = as.matrix(newdata))</span></span>
-<span id="cb18-76"><a href="#cb18-76"></a><span class="co">#     return(data.frame(Yes = pred, No = 1 - pred))</span></span>
-<span id="cb18-77"><a href="#cb18-77"></a><span class="co"># }</span></span>
-<span id="cb18-78"><a href="#cb18-78"></a><span class="co"># </span></span>
-<span id="cb18-79"><a href="#cb18-79"></a><span class="co"># library(lime)</span></span>
-<span id="cb18-80"><a href="#cb18-80"></a><span class="co"># # Test our predict_model() function</span></span>
-<span id="cb18-81"><a href="#cb18-81"></a><span class="co"># predict_model(x = model_keras, newdata = x_test_tbl, type = 'raw') %&gt;%</span></span>
-<span id="cb18-82"><a href="#cb18-82"></a><span class="co">#     tibble::as_tibble()</span></span>
-<span id="cb18-83"><a href="#cb18-83"></a><span class="co"># </span></span>
-<span id="cb18-84"><a href="#cb18-84"></a><span class="co"># # Run lime() on training set</span></span>
-<span id="cb18-85"><a href="#cb18-85"></a><span class="co"># explainer &lt;- lime::lime(</span></span>
-<span id="cb18-86"><a href="#cb18-86"></a><span class="co">#     x_train_tbl, </span></span>
-<span id="cb18-87"><a href="#cb18-87"></a><span class="co">#     y_train_vec , </span></span>
-<span id="cb18-88"><a href="#cb18-88"></a><span class="co">#     bin_continuous = FALSE)</span></span>
-<span id="cb18-89"><a href="#cb18-89"></a><span class="co"># </span></span>
-<span id="cb18-90"><a href="#cb18-90"></a><span class="co"># explanation &lt;- lime::explain(</span></span>
-<span id="cb18-91"><a href="#cb18-91"></a><span class="co">#     x_test_tbl[1:10,], </span></span>
-<span id="cb18-92"><a href="#cb18-92"></a><span class="co">#     explainer = explainer, </span></span>
-<span id="cb18-93"><a href="#cb18-93"></a><span class="co">#     n_labels   = 1, </span></span>
-<span id="cb18-94"><a href="#cb18-94"></a><span class="co">#     n_features = 51,</span></span>
-<span id="cb18-95"><a href="#cb18-95"></a><span class="co">#     kernel_width   = 1)</span></span>
-<span id="cb18-96"><a href="#cb18-96"></a><span class="co"># </span></span>
-<span id="cb18-97"><a href="#cb18-97"></a><span class="co"># # Feature correlations to Churn</span></span>
-<span id="cb18-98"><a href="#cb18-98"></a><span class="co"># corrr_analysis &lt;- x_train_tbl %&gt;%</span></span>
-<span id="cb18-99"><a href="#cb18-99"></a><span class="co">#     mutate(Churn = y_train_vec) %&gt;%</span></span>
-<span id="cb18-100"><a href="#cb18-100"></a><span class="co">#     correlate() %&gt;%</span></span>
-<span id="cb18-101"><a href="#cb18-101"></a><span class="co">#     focus(Churn) %&gt;%</span></span>
-<span id="cb18-102"><a href="#cb18-102"></a><span class="co">#     rename(feature = rowname) %&gt;%</span></span>
-<span id="cb18-103"><a href="#cb18-103"></a><span class="co">#     arrange(abs(Churn)) %&gt;%</span></span>
-<span id="cb18-104"><a href="#cb18-104"></a><span class="co">#     mutate(feature = as_factor(feature)) </span></span>
-<span id="cb18-105"><a href="#cb18-105"></a><span class="co"># corrr_analysis</span></span>
-<span id="cb18-106"><a href="#cb18-106"></a><span class="co"># </span></span>
-<span id="cb18-107"><a href="#cb18-107"></a><span class="co"># # Correlation visualization</span></span>
-<span id="cb18-108"><a href="#cb18-108"></a><span class="co"># corrr_analysis %&gt;%</span></span>
-<span id="cb18-109"><a href="#cb18-109"></a><span class="co">#   ggplot(aes(x = ..., y = fct_reorder(..., desc(...)))) +</span></span>
-<span id="cb18-110"><a href="#cb18-110"></a><span class="co">#   geom_point() +</span></span>
-<span id="cb18-111"><a href="#cb18-111"></a><span class="co">#   </span></span>
-<span id="cb18-112"><a href="#cb18-112"></a><span class="co">#   # Positive Correlations - Contribute to churn</span></span>
-<span id="cb18-113"><a href="#cb18-113"></a><span class="co">#  geom_segment(aes(xend = ..., yend = ...), </span></span>
-<span id="cb18-114"><a href="#cb18-114"></a><span class="co">#               color = "red", </span></span>
-<span id="cb18-115"><a href="#cb18-115"></a><span class="co">#               data = corrr_analysis %&gt;% filter(... &gt; ...)) +</span></span>
-<span id="cb18-116"><a href="#cb18-116"></a><span class="co">#   geom_point(color = "red", </span></span>
-<span id="cb18-117"><a href="#cb18-117"></a><span class="co">#              data = corrr_analysis %&gt;% filter(... &gt; ...)) +</span></span>
-<span id="cb18-118"><a href="#cb18-118"></a><span class="co">#   </span></span>
-<span id="cb18-119"><a href="#cb18-119"></a><span class="co">#   # Negative Correlations - Prevent churn</span></span>
-<span id="cb18-120"><a href="#cb18-120"></a><span class="co">#  geom_segment(aes(xend = 0, yend = feature), </span></span>
-<span id="cb18-121"><a href="#cb18-121"></a><span class="co">#               color = "#2DC6D6", </span></span>
-<span id="cb18-122"><a href="#cb18-122"></a><span class="co">#                data = ...) +</span></span>
-<span id="cb18-123"><a href="#cb18-123"></a><span class="co">#   geom_point(color = "#2DC6D6", </span></span>
-<span id="cb18-124"><a href="#cb18-124"></a><span class="co">#              data = ...) +</span></span>
-<span id="cb18-125"><a href="#cb18-125"></a><span class="co">#   </span></span>
-<span id="cb18-126"><a href="#cb18-126"></a><span class="co">#   # Vertical lines</span></span>
-<span id="cb18-127"><a href="#cb18-127"></a><span class="co">#   geom_vline(xintercept = 0, color = "#f1fa8c", size = 1, linetype = 2) +</span></span>
-<span id="cb18-128"><a href="#cb18-128"></a><span class="co">#   geom_vline( ... ) +</span></span>
-<span id="cb18-129"><a href="#cb18-129"></a><span class="co">#   geom_vline( ... ) +</span></span>
-<span id="cb18-130"><a href="#cb18-130"></a><span class="co">#   </span></span>
-<span id="cb18-131"><a href="#cb18-131"></a><span class="co">#   # Aesthetics</span></span>
-<span id="cb18-132"><a href="#cb18-132"></a><span class="co">#   labs( ... )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="co"># x_train_mrx = as.matrix(x_train_tbl)</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="co"># </span></span>
+<span id="cb19-3"><a href="#cb19-3"></a><span class="co"># ncol(x_train_tbl)</span></span>
+<span id="cb19-4"><a href="#cb19-4"></a><span class="co"># </span></span>
+<span id="cb19-5"><a href="#cb19-5"></a><span class="co"># fit_keras &lt;- keras::fit(</span></span>
+<span id="cb19-6"><a href="#cb19-6"></a><span class="co">#     object = model_keras,</span></span>
+<span id="cb19-7"><a href="#cb19-7"></a><span class="co">#     x = x_train_tbl, </span></span>
+<span id="cb19-8"><a href="#cb19-8"></a><span class="co">#     y = y_train_vec , </span></span>
+<span id="cb19-9"><a href="#cb19-9"></a><span class="co">#     epochs = 35 , </span></span>
+<span id="cb19-10"><a href="#cb19-10"></a><span class="co">#     batch_size = 50 ,</span></span>
+<span id="cb19-11"><a href="#cb19-11"></a><span class="co">#     validation_split = 0.3 </span></span>
+<span id="cb19-12"><a href="#cb19-12"></a><span class="co">#     )</span></span>
+<span id="cb19-13"><a href="#cb19-13"></a><span class="co"># </span></span>
+<span id="cb19-14"><a href="#cb19-14"></a><span class="co"># fit_keras</span></span>
+<span id="cb19-15"><a href="#cb19-15"></a><span class="co"># </span></span>
+<span id="cb19-16"><a href="#cb19-16"></a><span class="co"># plot(fit_keras) +</span></span>
+<span id="cb19-17"><a href="#cb19-17"></a><span class="co">#  labs(title = "Deep Learning Training Results") +</span></span>
+<span id="cb19-18"><a href="#cb19-18"></a><span class="co">#   theme(legend.position  = "bottom", </span></span>
+<span id="cb19-19"><a href="#cb19-19"></a><span class="co">#         strip.placement  = "inside",</span></span>
+<span id="cb19-20"><a href="#cb19-20"></a><span class="co">#         strip.background = element_rect(fill = "#grey"))</span></span>
+<span id="cb19-21"><a href="#cb19-21"></a><span class="co"># </span></span>
+<span id="cb19-22"><a href="#cb19-22"></a><span class="do">## # Predicted Class</span></span>
+<span id="cb19-23"><a href="#cb19-23"></a><span class="co"># yhat_keras_class_vec &lt;- predict_classes(object = model_keras, x = #as.matrix(x_test_tbl)) %&gt;%</span></span>
+<span id="cb19-24"><a href="#cb19-24"></a><span class="co">#    as.vector()</span></span>
+<span id="cb19-25"><a href="#cb19-25"></a><span class="co"># </span></span>
+<span id="cb19-26"><a href="#cb19-26"></a><span class="co"># # Predicted Class Probability</span></span>
+<span id="cb19-27"><a href="#cb19-27"></a><span class="co">#as.matrix(x_test_tbl)) %&gt;%</span></span>
+<span id="cb19-28"><a href="#cb19-28"></a><span class="co">#     as.vector()</span></span>
+<span id="cb19-29"><a href="#cb19-29"></a><span class="co"># </span></span>
+<span id="cb19-30"><a href="#cb19-30"></a><span class="co"># # Format test data and predictions for yardstick metrics</span></span>
+<span id="cb19-31"><a href="#cb19-31"></a><span class="co"># estimates_keras_tbl &lt;- tibble(</span></span>
+<span id="cb19-32"><a href="#cb19-32"></a><span class="co">#     truth      = as.factor(y_test_vec) %&gt;% fct_recode(yes = "1", no = #"0"),</span></span>
+<span id="cb19-33"><a href="#cb19-33"></a><span class="co">#     estimate   = as.factor(yhat_keras_class_vec) %&gt;% fct_recode(yes = #"1", no = "0"),</span></span>
+<span id="cb19-34"><a href="#cb19-34"></a><span class="co">#    class_prob = yhat_keras_prob_vec</span></span>
+<span id="cb19-35"><a href="#cb19-35"></a><span class="co"># )</span></span>
+<span id="cb19-36"><a href="#cb19-36"></a><span class="co"># </span></span>
+<span id="cb19-37"><a href="#cb19-37"></a><span class="co">#estimates_keras_tbl</span></span>
+<span id="cb19-38"><a href="#cb19-38"></a><span class="co"># </span></span>
+<span id="cb19-39"><a href="#cb19-39"></a><span class="co"># # Confusion Table</span></span>
+<span id="cb19-40"><a href="#cb19-40"></a><span class="co"># estimates_keras_tbl %&gt;% conf_mat(</span></span>
+<span id="cb19-41"><a href="#cb19-41"></a><span class="co">#   truth,</span></span>
+<span id="cb19-42"><a href="#cb19-42"></a><span class="co">#   estimate)</span></span>
+<span id="cb19-43"><a href="#cb19-43"></a><span class="co">#</span></span>
+<span id="cb19-44"><a href="#cb19-44"></a><span class="co"># # Accuracy</span></span>
+<span id="cb19-45"><a href="#cb19-45"></a><span class="co"># estimates_keras_tbl %&gt;% accuracy(truth, estimate)</span></span>
+<span id="cb19-46"><a href="#cb19-46"></a><span class="co"># </span></span>
+<span id="cb19-47"><a href="#cb19-47"></a><span class="co"># # AUC</span></span>
+<span id="cb19-48"><a href="#cb19-48"></a><span class="co"># estimates_keras_tbl %&gt;% roc_auc(</span></span>
+<span id="cb19-49"><a href="#cb19-49"></a><span class="co">#   data,</span></span>
+<span id="cb19-50"><a href="#cb19-50"></a><span class="co">#   truth,</span></span>
+<span id="cb19-51"><a href="#cb19-51"></a><span class="co">#   event_level = "second")</span></span>
+<span id="cb19-52"><a href="#cb19-52"></a><span class="co"># </span></span>
+<span id="cb19-53"><a href="#cb19-53"></a><span class="co"># # Precision</span></span>
+<span id="cb19-54"><a href="#cb19-54"></a><span class="co"># tibble(</span></span>
+<span id="cb19-55"><a href="#cb19-55"></a><span class="co">#     precision = precision(</span></span>
+<span id="cb19-56"><a href="#cb19-56"></a><span class="co">#                         data,</span></span>
+<span id="cb19-57"><a href="#cb19-57"></a><span class="co">#                         truth),</span></span>
+<span id="cb19-58"><a href="#cb19-58"></a><span class="co">#     recall    = recall(</span></span>
+<span id="cb19-59"><a href="#cb19-59"></a><span class="co">#                       data,</span></span>
+<span id="cb19-60"><a href="#cb19-60"></a><span class="co">#                       truth)</span></span>
+<span id="cb19-61"><a href="#cb19-61"></a><span class="co"># )</span></span>
+<span id="cb19-62"><a href="#cb19-62"></a><span class="co"># </span></span>
+<span id="cb19-63"><a href="#cb19-63"></a><span class="co"># # F1-Statistic</span></span>
+<span id="cb19-64"><a href="#cb19-64"></a><span class="co"># estimates_keras_tbl %&gt;% f_meas(truth, estimate, beta = 1)</span></span>
+<span id="cb19-65"><a href="#cb19-65"></a><span class="co"># </span></span>
+<span id="cb19-66"><a href="#cb19-66"></a><span class="co"># class(model_keras)</span></span>
+<span id="cb19-67"><a href="#cb19-67"></a><span class="co"># </span></span>
+<span id="cb19-68"><a href="#cb19-68"></a><span class="co"># # Setup lime::model_type() function for keras</span></span>
+<span id="cb19-69"><a href="#cb19-69"></a><span class="co"># model_type.keras.engine.sequential.Sequential  &lt;- function(x, ...) {</span></span>
+<span id="cb19-70"><a href="#cb19-70"></a><span class="co">#     return("classification")</span></span>
+<span id="cb19-71"><a href="#cb19-71"></a><span class="co"># }</span></span>
+<span id="cb19-72"><a href="#cb19-72"></a><span class="co"># </span></span>
+<span id="cb19-73"><a href="#cb19-73"></a><span class="co"># # Setup lime::predict_model() function for keras</span></span>
+<span id="cb19-74"><a href="#cb19-74"></a><span class="co"># predict_model.keras.engine.sequential.Sequential &lt;- function(x, newdata, #type, ...) {</span></span>
+<span id="cb19-75"><a href="#cb19-75"></a><span class="co">#     pred &lt;- predict_proba(object = x, x = as.matrix(newdata))</span></span>
+<span id="cb19-76"><a href="#cb19-76"></a><span class="co">#     return(data.frame(Yes = pred, No = 1 - pred))</span></span>
+<span id="cb19-77"><a href="#cb19-77"></a><span class="co"># }</span></span>
+<span id="cb19-78"><a href="#cb19-78"></a><span class="co"># </span></span>
+<span id="cb19-79"><a href="#cb19-79"></a><span class="co"># library(lime)</span></span>
+<span id="cb19-80"><a href="#cb19-80"></a><span class="co"># # Test our predict_model() function</span></span>
+<span id="cb19-81"><a href="#cb19-81"></a><span class="co"># predict_model(x = model_keras, newdata = x_test_tbl, type = 'raw') %&gt;%</span></span>
+<span id="cb19-82"><a href="#cb19-82"></a><span class="co">#     tibble::as_tibble()</span></span>
+<span id="cb19-83"><a href="#cb19-83"></a><span class="co"># </span></span>
+<span id="cb19-84"><a href="#cb19-84"></a><span class="co"># # Run lime() on training set</span></span>
+<span id="cb19-85"><a href="#cb19-85"></a><span class="co"># explainer &lt;- lime::lime(</span></span>
+<span id="cb19-86"><a href="#cb19-86"></a><span class="co">#     x_train_tbl, </span></span>
+<span id="cb19-87"><a href="#cb19-87"></a><span class="co">#     y_train_vec , </span></span>
+<span id="cb19-88"><a href="#cb19-88"></a><span class="co">#     bin_continuous = FALSE)</span></span>
+<span id="cb19-89"><a href="#cb19-89"></a><span class="co"># </span></span>
+<span id="cb19-90"><a href="#cb19-90"></a><span class="co"># explanation &lt;- lime::explain(</span></span>
+<span id="cb19-91"><a href="#cb19-91"></a><span class="co">#     x_test_tbl[1:10,], </span></span>
+<span id="cb19-92"><a href="#cb19-92"></a><span class="co">#     explainer = explainer, </span></span>
+<span id="cb19-93"><a href="#cb19-93"></a><span class="co">#     n_labels   = 1, </span></span>
+<span id="cb19-94"><a href="#cb19-94"></a><span class="co">#     n_features = 51,</span></span>
+<span id="cb19-95"><a href="#cb19-95"></a><span class="co">#     kernel_width   = 1)</span></span>
+<span id="cb19-96"><a href="#cb19-96"></a><span class="co"># </span></span>
+<span id="cb19-97"><a href="#cb19-97"></a><span class="co"># # Feature correlations to Churn</span></span>
+<span id="cb19-98"><a href="#cb19-98"></a><span class="co"># corrr_analysis &lt;- x_train_tbl %&gt;%</span></span>
+<span id="cb19-99"><a href="#cb19-99"></a><span class="co">#     mutate(Churn = y_train_vec) %&gt;%</span></span>
+<span id="cb19-100"><a href="#cb19-100"></a><span class="co">#     correlate() %&gt;%</span></span>
+<span id="cb19-101"><a href="#cb19-101"></a><span class="co">#     focus(Churn) %&gt;%</span></span>
+<span id="cb19-102"><a href="#cb19-102"></a><span class="co">#     rename(feature = rowname) %&gt;%</span></span>
+<span id="cb19-103"><a href="#cb19-103"></a><span class="co">#     arrange(abs(Churn)) %&gt;%</span></span>
+<span id="cb19-104"><a href="#cb19-104"></a><span class="co">#     mutate(feature = as_factor(feature)) </span></span>
+<span id="cb19-105"><a href="#cb19-105"></a><span class="co"># corrr_analysis</span></span>
+<span id="cb19-106"><a href="#cb19-106"></a><span class="co"># </span></span>
+<span id="cb19-107"><a href="#cb19-107"></a><span class="co"># # Correlation visualization</span></span>
+<span id="cb19-108"><a href="#cb19-108"></a><span class="co"># corrr_analysis %&gt;%</span></span>
+<span id="cb19-109"><a href="#cb19-109"></a><span class="co">#   ggplot(aes(x = ..., y = fct_reorder(..., desc(...)))) +</span></span>
+<span id="cb19-110"><a href="#cb19-110"></a><span class="co">#   geom_point() +</span></span>
+<span id="cb19-111"><a href="#cb19-111"></a><span class="co">#   </span></span>
+<span id="cb19-112"><a href="#cb19-112"></a><span class="co">#   # Positive Correlations - Contribute to churn</span></span>
+<span id="cb19-113"><a href="#cb19-113"></a><span class="co">#  geom_segment(aes(xend = ..., yend = ...), </span></span>
+<span id="cb19-114"><a href="#cb19-114"></a><span class="co">#               color = "red", </span></span>
+<span id="cb19-115"><a href="#cb19-115"></a><span class="co">#               data = corrr_analysis %&gt;% filter(... &gt; ...)) +</span></span>
+<span id="cb19-116"><a href="#cb19-116"></a><span class="co">#   geom_point(color = "red", </span></span>
+<span id="cb19-117"><a href="#cb19-117"></a><span class="co">#              data = corrr_analysis %&gt;% filter(... &gt; ...)) +</span></span>
+<span id="cb19-118"><a href="#cb19-118"></a><span class="co">#   </span></span>
+<span id="cb19-119"><a href="#cb19-119"></a><span class="co">#   # Negative Correlations - Prevent churn</span></span>
+<span id="cb19-120"><a href="#cb19-120"></a><span class="co">#  geom_segment(aes(xend = 0, yend = feature), </span></span>
+<span id="cb19-121"><a href="#cb19-121"></a><span class="co">#               color = "#2DC6D6", </span></span>
+<span id="cb19-122"><a href="#cb19-122"></a><span class="co">#                data = ...) +</span></span>
+<span id="cb19-123"><a href="#cb19-123"></a><span class="co">#   geom_point(color = "#2DC6D6", </span></span>
+<span id="cb19-124"><a href="#cb19-124"></a><span class="co">#              data = ...) +</span></span>
+<span id="cb19-125"><a href="#cb19-125"></a><span class="co">#   </span></span>
+<span id="cb19-126"><a href="#cb19-126"></a><span class="co">#   # Vertical lines</span></span>
+<span id="cb19-127"><a href="#cb19-127"></a><span class="co">#   geom_vline(xintercept = 0, color = "#f1fa8c", size = 1, linetype = 2) +</span></span>
+<span id="cb19-128"><a href="#cb19-128"></a><span class="co">#   geom_vline( ... ) +</span></span>
+<span id="cb19-129"><a href="#cb19-129"></a><span class="co">#   geom_vline( ... ) +</span></span>
+<span id="cb19-130"><a href="#cb19-130"></a><span class="co">#   </span></span>
+<span id="cb19-131"><a href="#cb19-131"></a><span class="co">#   # Aesthetics</span></span>
+<span id="cb19-132"><a href="#cb19-132"></a><span class="co">#   labs( ... )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
@@ -1137,7 +1142,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"openEffect":"zoom","selector":".lightbox","closeEffect":"zoom","loop":false,"descPosition":"bottom"});
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","selector":".lightbox","openEffect":"zoom","loop":false,"descPosition":"bottom"});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;

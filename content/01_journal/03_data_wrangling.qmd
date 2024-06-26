@@ -1,8 +1,140 @@
 ---
-title: "Data Wrangling"
-author: "Joschka Schwarz"
+title: "03 Automated Machine Learning with H20 (I)"
+author: "Muhammad Shamookh"
+date: "2024-06"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    df_print: paged
+    collapsed: false
+    number_sections: true
+    toc_depth: 3
+    code_folding: hide
+editor_options:
+  chunk_output_type: console
 ---
 
-::: callout-note
-You can delete everything in here and start fresh.
-:::
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
+```
+
+# Descriptive features and plot_ggpairs() to further investigate the features.
+```{r}
+library(tidyverse)
+library(GGally)
+```
+
+##The provided R code snippet is performing the following tasks:
+
+- Loading a CSV File:
+It reads a CSV file named WA_Fn-UseC_-HR-Employee-Attrition.csv located in the datasets-1067-1925 directory within the ss24-bdml-shamookh GitHub repository on your local machine. The read_csv function from the readr package (part of the tidyverse) is used for this task.
+
+- Inspecting the Data:
+After loading the data into a data frame called employee_attrition_tbl, it uses the glimpse function to display the structure and a preview of the data. The glimpse function provides a concise view of the data, showing the column names, data types, and a preview of the first few values in each column.
+
+
+```{r}
+employee_attrition_tbl <- read_csv("./03_ml_aut_files/datasets-1067-1925-WA_Fn-UseC_-HR-Employee-Attrition.csv")
+
+employee_attrition_tbl %>%
+  glimpse()
+```
+This output shows the number of rows and columns in the data frame, the names of the columns, the data types of each column (e.g., <dbl> for double/numeric, <chr> for character/string), and a preview of the first few values in each column. This provides a quick overview of the datasets structure and content.
+
+- Function Code:
+The function creates a pairwise plot matrix with color coding based on the Species variable.
+
+```{r}
+# Define the plot_ggpairs function
+plot_ggpairs <- function(data, color = NULL, density_alpha = 0.5) {
+   
+    color_expr <- enquo(color)
+   
+    if (rlang::quo_is_null(color_expr)) {
+       
+        g <- data %>%
+            ggpairs(lower = "blank",
+                    title = "",      # Set title to empty string
+                    subtitle = "")   # Set subtitle to empty string
+       
+    } else {
+       
+        color_name <- quo_name(color_expr)
+       
+        g <- data %>%
+            ggpairs(mapping = aes_string(color = color_name),
+                    lower = "blank", legend = 1,
+                    diag = list(continuous = wrap("densityDiag",
+                                                  alpha = density_alpha)),
+                    title = "",      # Set title to empty string
+                    subtitle = "")   # Set subtitle to empty string +
+            theme(legend.position = "bottom") +
+            theme(text = element_text(family = "Times New Roman", size = 18)) +
+            labs(title = element_text(face = "bold", size = 12),
+                 subtitle = element_text(face = "bold", size = 12),
+                 caption = element_text(size = 12))
+    }
+   
+    return(g)
+}
+```
+
+- Plotting Code:
+The plotting code reads the data, selects relevant columns, and uses the modified plot_ggpairs function to create a plot. It saves the plot as "Attrition_plot.png" and displays it in the R console or viewer.
+
+```{r}
+# Read the data
+employee_attrition_tbl <- read_csv("./03_ml_aut_files/datasets-1067-1925-WA_Fn-UseC_-HR-Employee-Attrition.csv")
+
+# Create the plot using plot_ggpairs function
+plot <- employee_attrition_tbl %>%
+    select(Attrition, MonthlyIncome, PercentSalaryHike, StockOptionLevel,
+           EnvironmentSatisfaction, WorkLifeBalance, JobInvolvement, OverTime,
+           TrainingTimesLastYear, YearsAtCompany, YearsSinceLastPromotion) %>%
+    plot_ggpairs(color = Attrition)
+
+# Save the plot as "Attrition_plot"
+ggsave("Attrition_plot.png", plot, width = 25, height = 15)
+
+# Displaying of the saved plot
+knitr::include_graphics("./Attrition_plot.png")
+
+```
+# Answer to the questions
+
+### Compensation Features
+1. What can you deduce about the interaction between Monthly Income and Attrition?
+c. Those that are leaving have a lower Monthly Income
+
+2. What can you deduce about the interaction between Percent Salary Hike and Attrition?
+  d. It's difficult to deduce anything based on the visualization
+
+3. What can you deduce about the interaction between Stock Option Level and Attrition?
+  b. Those that are staying have a higher stock option level
+
+### Survey Results
+4. What can you deduce about the interaction between Environment Satisfaction and Attrition?
+  a. A higher proportion of those leaving have a low environment satisfaction level
+ 
+5. What can you deduce about the interaction between Work Life Balance and Attrition
+  b. Those that are staying have a higher density of 2's and 3'
+ 
+### Performance Data
+6. What Can you deduce about the interaction between Job Involvement and Attrition?
+  a. Those that are leaving have a lower density of 3's and 4's
+ 
+### Work-Life Features
+7. What can you deduce about the interaction between Over Time and Attrition?
+  a. The proportion of those leaving that are working Over Time are high compared to those that are not leaving
+ 
+### Training and Education
+8. What can you deduce about the interaction between Training Times Last Year and Attrition
+  c It's difficult to deduce anything based on the visualization
+ 
+### Time-Based Features
+9. What can you deduce about the interaction between Years At Company and Attrition
+  b People that leave tend to have less working years at the company
+ 
+10. What can you deduce about the interaction between Years Since Last Promotion and Attrition?
+  c. It's difficult to deduce anything based on the visualization
